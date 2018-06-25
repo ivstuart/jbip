@@ -20,12 +20,20 @@ public class Plane {
     private Sprite sprite;
     private int throttle;
     private int rotation; // degrees
+
     private boolean isFlying = false;
+    private boolean isStalled = false;
 
     private int countShots;
     private int maxShots = 2;
 
-    private float gravity = 0.1F;
+    private float AIR_FRICTION = 0.96F;
+
+    private float gravity = 2.5F;
+    private float lift = 2.0F;
+
+    private float restartVelocity = 16.0F;
+    private float stallVelocity = 8.0F;
 
     public Plane() {
         this.mainPanel = null;
@@ -78,34 +86,57 @@ public class Plane {
     public void updateVelocity() {
 
         if (sprite != null) {
-
-            float velocity = Math.min((float) Math.sqrt(sprite.getVelocitySquared()) + throttle, 10);
-
-            float cos = (float) Math.cos(rotation * Math.PI / 180.0);
-            float sin = (float) Math.sin(rotation * Math.PI / 180.0);
-
-            // float velocity = Math.min((float)Math.sqrt(sprite.getVelocitySquared()) + throttle, 10);
-            // float forwardSpeed = Math.abs(cos * sprite.getDx() + sin * sprite.getDy());
-
-            // LOGGER.info("ForwardSpeed: " + forwardSpeed);
+            float cos, sin;
+            if (sprite.isPlayerOne()) {
+                cos = (float) Math.cos(rotation * Math.PI / 180.0);
+                sin = (float) Math.sin(rotation * Math.PI / 180.0);
+            } else {
+                cos = -(float) Math.cos(rotation * Math.PI / 180.0);
+                sin = (float) Math.sin(-rotation * Math.PI / 180.0);
+            }
 
             // Thrust
-            if (sprite.isPlayerOne()) {
-                sprite.setDx((float) Math.cos(rotation * Math.PI / 180.0) * velocity);
-                sprite.setDy((float) Math.sin(rotation * Math.PI / 180.0) * velocity);
-            } else {
-                sprite.setDx(-(float) Math.cos(rotation * Math.PI / 180.0) * velocity);
-                sprite.setDy((float) Math.sin(-rotation * Math.PI / 180.0) * velocity);
+            float dx = sprite.getDx() + cos * throttle;
+            float lift = Math.abs(cos * this.lift);
+
+            if (isStalled) {
+                lift = 0;
+                throttle = 0;
             }
+
+            float dy = sprite.getDy() + sin * throttle + gravity - lift;
+
+            float velocity = (float) Math.sqrt((dx * dx) + (dy * dy));
+
+            // Stalling
+            if (velocity < stallVelocity && !sprite.isOnGround()) {
+                isStalled = true;
+            }
+
+            if (isStalled) {
+                if (velocity > restartVelocity) {
+                    isStalled = false;
+                }
+            }
+
+            if (!isStalled) {
+                dx = cos * velocity;
+                dy = sin * velocity;
+            }
+
+            // Drag
+            dx *= AIR_FRICTION;
+            dy *= AIR_FRICTION;
+
+
+            sprite.setDx(dx);
+            sprite.setDy(dy);
 
             sprite.setAngle(rotation * Math.PI / 180.0);
 
             LOGGER.debug("Rotation: " + rotation + " dx: " + sprite.getDx() + " dy: " + sprite.getDy());
         }
-        // Lift
-        // Gravity
-        // Drag
-        // Stalling
+
     }
 
     public void shoot() {
@@ -128,9 +159,9 @@ public class Plane {
         Image shotImage = null;
 
         if (sprite.isPlayerOne()) {
-            shotImage = GraphicsManager.getInstance().getImage("shot3");
+            shotImage = GraphicsManager.getInstance().getImage("shot1");
         } else {
-            shotImage = GraphicsManager.getInstance().getImage("shot4");
+            shotImage = GraphicsManager.getInstance().getImage("shot2");
         }
 
         Sprite shot = new Sprite(shotImage);
@@ -172,4 +203,7 @@ public class Plane {
 
     }
 
+    public void setStalled(boolean stalled) {
+        this.isStalled = stalled;
+    }
 }

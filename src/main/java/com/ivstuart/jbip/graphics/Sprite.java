@@ -198,6 +198,8 @@ public class Sprite {
                 y = 0;
                 LOGGER.info("Plane has stalled");
                 plane.setThrottle(0);
+                plane.getSprite().setDx(0);
+                plane.setStalled(true);
             }
         }
 

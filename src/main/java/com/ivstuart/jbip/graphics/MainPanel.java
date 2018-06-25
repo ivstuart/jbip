@@ -103,6 +103,7 @@ public class MainPanel extends JPanel {
         player2.setPlane(planeTwo);
         planeTwo.setSprite(player2);
         planeTwo.setRotation(0);
+        planeTwo.setStalled(false);
 
     }
 
@@ -121,7 +122,7 @@ public class MainPanel extends JPanel {
         player1.setPlane(planeOne);
         planeOne.setSprite(player1);
         planeOne.setRotation(0);
-
+        planeOne.setStalled(false);
     }
 
     public void initPlayerOneKeys() {

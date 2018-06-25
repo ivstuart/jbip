@@ -29,6 +29,8 @@ public class GraphicsManager {
 
     private Map<String, Image> map = new HashMap<String, Image>();
 
+    private boolean newGraphics = true;
+
     /**
      *
      */
@@ -128,42 +130,46 @@ public class GraphicsManager {
     }
 
     public void init() {
-        loadImage("background", true);
-        loadImage("cloud", true);
-        loadImage("extra", true);
-        loadImage("hanger", true);
-        loadImage("player1", true);
-        loadImage("player1_ex1", true);
-        loadImage("player1_ex2", true);
-        loadImage("player1_ex3", true);
-        loadImage("shot1", true);
-        loadImage("shot3", true);
-        loadImage("shot4", true);
+        loadImage("background");
+        loadImage("cloud");
+        loadImage("extra");
+        loadImage("hanger");
+        loadImage("player1");
+        loadImage("player1_ex1");
+        loadImage("player1_ex2");
+        loadImage("player1_ex3");
 
-        loadImage("player2", true);
-        loadImage("player2_ex1", true);
-        loadImage("player2_ex2", true);
-        loadImage("player2_ex3", true);
-        loadImage("shot2", true);
+        loadImage("player2");
+        loadImage("player2_ex1");
+        loadImage("player2_ex2");
+        loadImage("player2_ex3");
+
+        loadImage("shot1");
+        loadImage("shot2");
 
 
     }
 
     public Image loadImage(String filename) {
-        return loadImage(filename, false);
+        if (newGraphics) {
+            return loadImage(filename, true, true, 1);
+        } else {
+            return loadImage(filename, false, true, 4);
+        }
+
     }
 
     /**
      * Gets an image from the images/ directory.
      */
-    public Image loadImage(String filename, boolean isPng) {
+    public Image loadImage(String filename, boolean isNewGraphics, boolean isTransparent, int scalingFactor) {
         URL aURL;
         try {
             String path = "";
-            if (isPng) {
-                path = "images/" + filename + ".png";
+            if (isNewGraphics) {
+                path = "new-images/" + filename + ".png";
             } else {
-                path = "images/" + filename + ".bmp";
+                path = "images/" + filename + ".png";
             }
             aURL = ClassLoader.getSystemResources(path).nextElement();
         } catch (Exception e) {
@@ -178,15 +184,13 @@ public class GraphicsManager {
             e.printStackTrace();
         }
 
-        // double size of image
-
-        int scalingFactor = 4;
-
         int rgb = bufferedImage.getRGB(0, 0);
 
         Image image = bufferedImage.getScaledInstance(bufferedImage.getWidth() * scalingFactor, bufferedImage.getHeight() * scalingFactor, 2);
 
-        image = makeColorTransparent(toBufferedImage(image), new Color(rgb));
+        if (isTransparent) {
+            image = makeColorTransparent(toBufferedImage(image), new Color(rgb));
+        }
 
         map.put(filename, image);
 
