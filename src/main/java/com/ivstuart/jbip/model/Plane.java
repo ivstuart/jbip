@@ -150,6 +150,11 @@ public class Plane {
             return;
         }
 
+        if (!mainPanel.getSprites().contains(sprite)) {
+            LOGGER.info("You can not shoot you are dead");
+            return;
+        }
+
         // TODO check is on ground in which case can not fire
 
         countShots++;

@@ -16,6 +16,10 @@ public class GameManager implements Runnable {
     MainPanel mainPanel;
     ScorePanel scorePanel;
 
+    public static boolean isPaused() {
+        return paused;
+    }
+
     public static void setPaused(boolean paused) {
         GameManager.paused = paused;
     }
@@ -53,11 +57,12 @@ public class GameManager implements Runnable {
         thread.start();
     }
 
-
     public void run() {
         while (true) {
-            mainPanel.update();
-            mainPanel.repaint();
+            if (!paused) {
+                mainPanel.update();
+                mainPanel.repaint();
+            }
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {

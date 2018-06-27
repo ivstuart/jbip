@@ -47,6 +47,8 @@ public class AudioCache {
         loadSound("fly", "player1_fly.wav");
         loadSound("shoot", "player1_shoot.wav");
 
+        loadSound("music1", "music1.wav");
+
     }
 
     private void loadSound(String key, String filename) {

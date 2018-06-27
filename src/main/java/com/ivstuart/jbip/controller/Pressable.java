@@ -3,6 +3,7 @@
 package com.ivstuart.jbip.controller;
 
 
+import com.ivstuart.jbip.game.GameManager;
 import com.ivstuart.jbip.model.Plane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +33,11 @@ public abstract class Pressable extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         LOGGER.debug("Pressed: " + e.getActionCommand());
+        if (GameManager.isPaused() && !e.getActionCommand().equals("1")) {
+            return;
+        }
+
+
         this.pressed();
     }
 

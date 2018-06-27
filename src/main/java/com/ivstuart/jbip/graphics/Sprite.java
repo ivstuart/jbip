@@ -226,7 +226,7 @@ public class Sprite {
                 return true;
             }
             // TODO tweak this.
-            if (y < 0 || y > 640) {
+            if (y < 0 || y > 650) {
                 return true;
             }
             return false;

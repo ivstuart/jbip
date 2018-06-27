@@ -2,6 +2,7 @@ package com.ivstuart.jbip.graphics;
 
 import com.ivstuart.jbip.controller.UserInputFactory;
 import com.ivstuart.jbip.model.Plane;
+import com.ivstuart.jbip.sound.AudioCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -93,7 +94,7 @@ public class MainPanel extends JPanel {
 
     private void spawnPlayerTwo() {
         Sprite player2 = new Sprite(GraphicsManager.getInstance().getImage("player2"));
-        player2.setX(1200);
+        player2.setX(1160);
         player2.setY(630);
         player2.setPlane(true);
         sprites.add(2, player2);
@@ -326,5 +327,6 @@ public class MainPanel extends JPanel {
         explosion.setX(sprite.getX());
         explosion.setY(sprite.getY());
         this.getSprites().add(explosion);
+        AudioCache.play("die");
     }
 }
